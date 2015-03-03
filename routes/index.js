@@ -5,9 +5,9 @@ var request = require('request');
 var async = require('async');
 
 var shasum_url = require('../lib/shasum_url');
-var github = require('../lib/github');
+var gitlab = require('../lib/gitlab');
 
-var github_uri = process.env.GITHUB_URL || 'https://api.github.com';
+var gitlab_uri = process.env.GITLAB_URL || 'https://gitlab.com/api/v3';
 
 var router = express.Router();
 
@@ -68,7 +68,7 @@ router.get('/:module', function(req, res, next) {
         });
     };
 
-    github.tags(user, repo, opt, req.curry(function(tags) {
+    gitlab.tags(user, repo, opt, req.curry(function(tags) {
         if (tags.length === 0) {
             return next(NotFound());
         }
@@ -111,7 +111,11 @@ router.get('/:module/:version/tarball', function(req, res, next) {
     var tag = req.param('version');
 
     //https://api.github.com/repos/<user>/<repo>/tarball/<tag | commitsh>'
-    var tarball_url = github_uri + '/repos/' + user + '/' + repo + '/tarball/' + tag;
+    
+    // TODO: Change this to gitlab url
+    // http://gitlab.eirenerx.com/<user>/<repo>/repository/archive.tar.gz?ref=<tag>
+
+    var tarball_url = gitlab_uri + '/repos/' + user + '/' + repo + '/tarball/' + tag;
 
     debug('proxy tarball', tarball_url);
 
